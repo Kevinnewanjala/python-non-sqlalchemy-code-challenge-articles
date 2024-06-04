@@ -7,7 +7,7 @@ class Article:
         if not isinstance(magazine, Magazine):
             raise Exception("magazine must be an instance of Magazine")
         if not isinstance(title, str) or not (5 <= len(title) <= 50):
-            raise Exception("title must be a string and should be between 5 and 50 characters")
+            raise ValueError("title must be a string and should be between 5 and 50 characters")
 
         self._author = author
         self._magazine = magazine
@@ -52,8 +52,6 @@ class Author:
     def name(self):
         return self._name
 
-    # name has no setter to make it immutable
-
     def articles(self):
         return [article for article in Article.all if article.author == self]
 
@@ -64,7 +62,8 @@ class Author:
         return Article(self, magazine, title)
 
     def topic_areas(self):
-        return list(set(magazine.category for magazine in self.magazines()))
+        areas = set(article.magazine.category for article in self.articles())
+        return list(areas) if areas else []
 
 
 class Magazine:
